@@ -3,4 +3,4 @@ project(DSA2_UseHeap)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(DSA2_UseHeap main.cpp)
+add_executable(DSA2_UseHeap useHeap.cpp hash.cpp hash.h heap.cpp heap.h)
