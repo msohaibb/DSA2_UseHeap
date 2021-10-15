@@ -11,7 +11,7 @@ hashTable::hashTable(int size) {
 // uses hash function
 int hashTable::insert(const string &key, void *pv){
 
-    int hashedKey = hashTable::hash(key);
+
     // checks if key already exists
     if(contains(key)){
         return 1;
@@ -22,12 +22,14 @@ int hashTable::insert(const string &key, void *pv){
             return 2;
         }
     }
+    int hashedKey = hashTable::hash(key);
     // if mapped value is occupied (or lazily deleted), keep moving to the right
     while(data[hashedKey].isOccupied && !data[hashedKey].isDeleted){
+        hashedKey++;
         if(hashedKey == capacity - 1){
             hashedKey = 0;
         }
-        hashedKey++;
+
     }
     data[hashedKey].key = key;
     data[hashedKey].isOccupied = true;
@@ -44,17 +46,49 @@ bool hashTable::contains(const string &key){
     }
     return true;
 }
-// will be implemented in the next assignment
-/*
-void *hashTable::getPointer(const std::string &key, bool *b){
-}
 
+// looks for key and returns pointer if found, boolean is set to false if not found (and nullptr is returned)
+void * hashTable::getPointer(const std::string &key, bool *b){
+    int hashedKey = findPos(key);
+
+    if(b) {
+        if (hashedKey == -1) {
+            *b = false;
+            return nullptr;
+        } else {
+            *b = true;
+        }
+    }
+
+    return data[hashedKey].pv;
+}
+// looks for key and sets the associated pointer if found
 int hashTable::setPointer(const std::string &key, void *pv){
+    int hashedKey = findPos(key);
+
+    if(hashedKey == -1){
+        return 1;
+    }
+    data[hashedKey].pv = pv;
+
+    return 0;
+
+
+}
+// lazy deletion: set that index in the hash table to be unusable if found
+bool hashTable::remove(const std::string &key){
+    int hashedKey = findPos(key);
+
+    if(hashedKey == -1){
+        return false;
+    }
+    data[hashedKey].isOccupied = false;
+    data[hashedKey].isDeleted = true;
+
+    return true;
+
 }
 
-bool hashTable::remove(const std::string &key){
-}
-*/
 // hash function obtained from https://stackoverflow.com/questions/8567238/hash-function-in-c-for-string-to-int
 int hashTable::hash(const string &key) const{
     int hashVal = 0;
@@ -73,13 +107,14 @@ int hashTable::hash(const string &key) const{
 int hashTable::findPos(const string &key){
     int hashedKey = hashTable::hash(key);
     while(data[hashedKey].isOccupied){
+        hashedKey++;
         if(data[hashedKey].key == key){
             return hashedKey;
         }
-        else if(hashedKey == capacity){
+        else if(hashedKey == capacity - 1){
             hashedKey = 0;
         }
-        hashedKey++;
+
     }
     return -1;
 }
@@ -103,7 +138,7 @@ bool hashTable::rehash(){
 
     return true;
 }
-int hashTable::getPrime(int size){
+unsigned int hashTable::getPrime(int size){
     //list of primes obtained from https://planetmath.org/goodhashtableprimes
     int primes[] = {24593, 49157, 98317, 196613, 393241, 786433,
                     1572869, 3145739, 6291469, 12582917, 25165843, 50331653, 100663319, 201326611, 402653189, 805306457,

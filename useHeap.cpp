@@ -11,7 +11,7 @@
 
 #include "heap.h"
 
-using namespace std;
+
 
 // Read an integer from standard input; if a non-integer is in the
 // buffer, the state is fixed and the user is re-prompted;

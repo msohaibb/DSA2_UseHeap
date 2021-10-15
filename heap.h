@@ -1,7 +1,12 @@
+#include <string>
+#include "hash.h"
+
 using namespace std;
 
 
+
 class heap {
+public:
     //
     // heap - The constructor allocates space for the nodes of the heap
     // and the mapping (hash table) based on the specified capacity
@@ -63,6 +68,23 @@ class heap {
     //
     int remove(const std::string &id, int *pKey = nullptr, void *ppData = nullptr);
 
+private:
+
+    int capacity;
+    int size;
+
+    class node{
+        string stringID;
+        int key;
+        void *p;
+    };
+
+    std::vector<node> heapData;
+    hashTable heapFinder;
+
+    void percolateUp(int pos);
+
+    void percolateDown(int pos);
 };
 
 

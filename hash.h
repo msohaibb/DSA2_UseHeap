@@ -24,24 +24,24 @@ public:
     // Check if the specified key is in the hash table.
     // If so, return true; otherwise, return false.
     bool contains(const std::string &key);
-/*
-  // Get the pointer associated with the specified key.
-  // If the key does not exist in the hash table, return nullptr.
-  // If an optional pointer to a bool is provided,
-  // set the bool to true if the key is in the hash table,
-  // and set the bool to false otherwise.
-  void *getPointer(const std::string &key, bool *b = nullptr);
 
-  // Set the pointer associated with the specified key.
-  // Returns 0 on success,
-  // 1 if the key does not exist in the hash table.
-  int setPointer(const std::string &key, void *pv);
+    // Get the pointer associated with the specified key.
+    // If the key does not exist in the hash table, return nullptr.
+    // If an optional pointer to a bool is provided,
+    // set the bool to true if the key is in the hash table,
+    // and set the bool to false otherwise.
+    void *getPointer(const std::string &key, bool *b = nullptr);
 
-  // Delete the item with the specified key.
-  // Returns true on success,
-  // false if the specified key is not in the hash table.
-  bool remove(const std::string &key);
-  */
+    // Set the pointer associated with the specified key.
+    // Returns 0 on success,
+    // 1 if the key does not exist in the hash table.
+    int setPointer(const std::string &key, void *pv);
+
+    // Delete the item with the specified key.
+    // Returns true on success,
+    // false if the specified key is not in the hash table.
+    bool remove(const std::string &key);
+
 private:
 
     // Each item in the hash table contains:
@@ -79,7 +79,7 @@ private:
 
     // Return a prime number at least as large as size.
     // Uses a precomputed sequence of selected prime numbers.
-    static int getPrime(int size);
+    static unsigned int getPrime(int size);
 };
 
 #endif //_HASH_H
