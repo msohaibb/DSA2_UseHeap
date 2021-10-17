@@ -70,21 +70,25 @@ public:
 
 private:
 
-    int capacity;
+    int fullSpaces;
     int size;
 
     class node{
+    public:
         string stringID;
         int key;
         void *p;
+
     };
 
-    std::vector<node> heapData;
-    hashTable heapFinder;
+    std::vector<node> data; // The actual binary heap
+    hashTable mapping; // maps ids to node pointers
 
-    void percolateUp(int pos);
 
-    void percolateDown(int pos);
+    void percolateUp(int posCur);
+    void percolateDown(int posCur);
+    int getPos(node *pn);
+
 };
 
 
