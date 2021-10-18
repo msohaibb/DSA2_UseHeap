@@ -67,7 +67,7 @@ private:
     std::vector<hashItem> data; // The actual entries are here.
 
     // The hash function.
-    int hash(const std::string &key) const;
+    int hash(const std::string &key);
 
     // Search for an item with the specified key.
     // Return the position if found, -1 otherwise.
@@ -79,7 +79,7 @@ private:
 
     // Return a prime number at least as large as size.
     // Uses a precomputed sequence of selected prime numbers.
-    static unsigned int getPrime(int size);
+    static int getPrime(int size);
 };
 
 #endif //_HASH_H

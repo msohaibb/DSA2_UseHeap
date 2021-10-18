@@ -11,25 +11,25 @@ hashTable::hashTable(int size) {
 // uses hash function
 int hashTable::insert(const string &key, void *pv){
 
-
-    // checks if key already exists
-    if(contains(key)){
-        return 1;
-    }
-    // rehash if more than half the capacity is used
     if(filled >= (capacity / 2)){
         if(!rehash()){
             return 2;
         }
     }
+
     int hashedKey = hashTable::hash(key);
+    // checks if key already exists
+    if(contains(key)){
+        return 1;
+    }
+    // rehash if more than half the capacity is used
+
     // if mapped value is occupied (or lazily deleted), keep moving to the right
     while(data[hashedKey].isOccupied && !data[hashedKey].isDeleted){
         hashedKey++;
         if(hashedKey == capacity - 1){
             hashedKey = 0;
         }
-
     }
     data[hashedKey].key = key;
     data[hashedKey].isOccupied = true;
@@ -90,7 +90,7 @@ bool hashTable::remove(const std::string &key){
 }
 
 // hash function obtained from https://stackoverflow.com/questions/8567238/hash-function-in-c-for-string-to-int
-int hashTable::hash(const string &key) const{
+int hashTable::hash(const string &key){
     int hashVal = 0;
 
     for(char i : key){
@@ -107,11 +107,12 @@ int hashTable::hash(const string &key) const{
 int hashTable::findPos(const string &key){
     int hashedKey = hashTable::hash(key);
     while(data[hashedKey].isOccupied){
-        hashedKey++;
+
         if(data[hashedKey].key == key){
             return hashedKey;
         }
-        else if(hashedKey == capacity - 1){
+        hashedKey++;
+        if(hashedKey == capacity - 1){
             hashedKey = 0;
         }
 
@@ -138,7 +139,7 @@ bool hashTable::rehash(){
 
     return true;
 }
-unsigned int hashTable::getPrime(int size){
+int hashTable::getPrime(int size){
     //list of primes obtained from https://planetmath.org/goodhashtableprimes
     int primes[] = {24593, 49157, 98317, 196613, 393241, 786433,
                     1572869, 3145739, 6291469, 12582917, 25165843, 50331653, 100663319, 201326611, 402653189, 805306457,

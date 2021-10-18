@@ -3,9 +3,11 @@
 //
 
 #include "heap.h"
-heap::heap(int capacity):mapping(capacity * 2){
+heap::heap(int size):mapping(size * 2){
     // Allocate space for the nodes (0 slot is not used)
-    data.resize(capacity + 1);
+    data.resize(size + 1);
+    this->size = size;
+    this->fullSpaces = 0;
 }
 
 int heap::insert(const std::string &id, int key, void *pv) {
@@ -13,11 +15,14 @@ int heap::insert(const std::string &id, int key, void *pv) {
         return 1;
     }
 
-    if(mapping.contains(id)){
+    bool hello = mapping.contains(id);
+    if(hello){
         return 2;
     }
 
-    data[++fullSpaces].stringID = id;
+    fullSpaces++;
+
+    data[fullSpaces].stringID = id;
     data[fullSpaces].key = key;
     data[fullSpaces].p = pv;
 
@@ -34,15 +39,19 @@ int heap::setKey(const std::string &id, int key){
     if(!b){
         return 1;
     }
+    int temp = pn->key;
+    pn->key = key;
 
-    if(pn->key > key){
+    if(temp > key){
         percolateUp(getPos(pn));
     }
 
-    else if(pn->key < key){
+    else if(temp < key){
         percolateDown(getPos(pn));
     }
-    pn->key = key;
+
+
+    return 0;
 }
 
 int heap::deleteMin(std::string *pId , int *pKey, void *ppData){
@@ -61,7 +70,7 @@ int heap::deleteMin(std::string *pId , int *pKey, void *ppData){
     }
 
 
-    data[1] = std::move(data[ fullSpaces--]);
+    data[1] = std::move(data[fullSpaces--]);
     percolateDown(1);
 
     mapping.remove(min.stringID);
@@ -83,36 +92,35 @@ int heap::remove(const std::string &id, int *pKey, void *ppData){
         *(static_cast<void **> (ppData)) = pn->p;
     }
 
-    int old = pn->key;
+    int temp = pn->key;
     *pn = data[fullSpaces--];
 
-    if(old > pn -> key){
+    if(temp > pn -> key){
         percolateUp(getPos(pn));
     }
 
-    else if(old < pn -> key){
+    else if(temp < pn -> key){
         percolateDown(getPos(pn));
     }
 
     return 0;
 }
 
-
 void heap::percolateUp(int posCur){
-    int hole = ++fullSpaces;
-    node temp = std::move(data[posCur]);
+    while(data[posCur].key < data[posCur/2].key) {
+        node temp = (data[posCur/2]);
+        data[posCur/2] = data[posCur];
+        data[posCur] = temp;
+        mapping.setPointer(data[posCur].stringID, &data[posCur]);
+        posCur/=2;
 
-    data[0] = std::move(temp);
-    for(; data[hole].key < data[hole/2].key; hole /= 2) {
-        data[hole] = std::move(data[hole / 2]);
     }
-    data[hole] = std::move(data[ 0 ]);
 }
 
 // adapted from textbook
 void heap::percolateDown(int posCur) {
     int child;
-    node temp = std::move(data[posCur]);
+    node temp = data[posCur];
 
     for(; posCur * 2 <= fullSpaces; posCur = child){
         child = posCur * 2;
@@ -120,14 +128,18 @@ void heap::percolateDown(int posCur) {
             ++child;
         }
         if(data[child].key < temp.key){
-            data[posCur] = std::move(data[child]);
+            data[posCur] = data[child];
+            mapping.setPointer(data[posCur].stringID, &data[posCur]);
         }
         else {
             break;
         }
     }
-    data[posCur] = std::move(temp);
+    data[posCur] = temp;
+    mapping.setPointer(data[posCur].stringID, &data[posCur]);
 }
+
+
 
 int heap::getPos(node *pn){
     int pos = pn - &data[0];
