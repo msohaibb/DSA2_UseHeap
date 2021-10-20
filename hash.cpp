@@ -2,6 +2,14 @@
 #include "hash.h"
 using namespace std;
 
+/*
+ * Created by Sohaib Bhatti
+ * Data Structures and Algorithms II
+ * Program 2 - 10/19/2021
+ * This defines the hash class. Modified from the hash class from Program 1.
+ * */
+
+
 // constructor
 hashTable::hashTable(int size) {
     capacity = getPrime(size);
